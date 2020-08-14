@@ -57,6 +57,7 @@ const NavbarFixed = () => {
             </Link>
           </Nav.Link>
         </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse className="justify-content-end">
           {renderList()}
         </Navbar.Collapse>
