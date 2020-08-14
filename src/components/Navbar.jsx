@@ -20,6 +20,7 @@ const NavbarFixed = () => {
       }
       return (
         <Nav>
+          <p>{localStorage.getItem("user")}</p>
           <Nav.Link>
             <Link to="/quiz">quiz</Link>
           </Nav.Link>
