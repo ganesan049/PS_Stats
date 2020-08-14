@@ -286,13 +286,14 @@ const GoogleSheet = () => {
   }
   if(data && team && quiz){
     return(
-      <>
+      <div className="
+      auth-card">
       <Styles>
       <Table columns={columnsTeam} data={team} />
       <Table columns={columnsPlayer} data={data} />
       {teamDisplay()}
     </Styles>
-      </>
+      </div>
     )
   }else{
     return (
