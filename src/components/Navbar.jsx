@@ -19,38 +19,48 @@ const NavbarFixed = () => {
         });
       }
       return (
-        <Nav>
-          <p>{localStorage.getItem("user")}</p>
-          <Nav.Link>
-            <Link to="/quiz">quiz</Link>
-          </Nav.Link>
-          <Nav.Link>
-            <a
-              className="waves-effect waves-light btn btn-primary"
-              onClick={(e) => {
-                localStorage.clear();
-                dispatch({ type: "CLEAR" });
-                history.push("/");
-              }}
-            >
-              logout
-            </a>
-          </Nav.Link>
-        </Nav>
+        <Navbar.Text>
+          <Nav className="mr-auto">
+            <Nav.Link>
+              <p>WELCOME {localStorage.getItem("user")} !!!</p>
+            </Nav.Link>
+            <Nav.Link>
+              <Link to="/quiz">quiz</Link>
+            </Nav.Link>
+            <Nav.Link>
+              <a
+                className="btn btn-primary mt-0"
+                onClick={(e) => {
+                  localStorage.clear();
+                  dispatch({ type: "CLEAR" });
+                  history.push("/");
+                }}
+              >
+                logout
+              </a>
+            </Nav.Link>
+          </Nav>
+        </Navbar.Text>
       );
     } else {
       return (
-        <Nav>
-          <Nav.Link>
-            <Link to="/signin">login</Link>
-          </Nav.Link>
-        </Nav>
+        <Navbar.Text>
+          <Nav className="mr-auto">
+            <Nav.Link>
+              <Link to="/signin">login</Link>
+            </Nav.Link>
+          </Nav>
+        </Navbar.Text>
       );
     }
   };
   return (
     <>
-      <Navbar bg="light" expand="sm" className="justify-content-between align-item-center">
+      <Navbar
+        bg="light"
+        expand="sm"
+        className="justify-content-between align-item-center"
+      >
         <Navbar.Brand href="#home">
           <Nav.Link>
             <Link to={state ? "/" : "/signin"} className="brand-logo left">
@@ -59,7 +69,7 @@ const NavbarFixed = () => {
           </Nav.Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse className="justify-content-end">
+        <Navbar.Collapse className="justify-content-end align-item-center">
           {renderList()}
         </Navbar.Collapse>
       </Navbar>
