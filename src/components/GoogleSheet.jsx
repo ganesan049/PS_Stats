@@ -3,14 +3,15 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, Spinner } from "react-bootstrap";
 import { useTable, useExpanded } from "react-table";
-
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 const GoogleSheet = () => {
   const Styles = styled.div`
     padding: 1rem;
 
     table {
-      border-spacing: 0;
-      border: 1px solid black;
+      border-spacing: 0 !important;
+      border: 1px solid black !important;
 
       tr {
         :last-child {
@@ -34,148 +35,6 @@ const GoogleSheet = () => {
     }
   `;
 
-  function Table({ columns: userColumns, data }) {
-    const {
-      getTableProps,
-      getTableBodyProps,
-      headerGroups,
-      rows,
-      prepareRow,
-      state: { expanded },
-    } = useTable(
-      {
-        columns: userColumns,
-        data,
-      },
-      useExpanded // Use the useExpanded plugin hook
-    );
-
-    return (
-      <>
-        <table {...getTableProps()}>
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </>
-    );
-  }
-  const columnsPlayer = React.useMemo(
-    () => [
-      {
-        id: "expander", // Make sure it has an ID
-        Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
-          <span {...getToggleAllRowsExpandedProps()}>
-            {isAllRowsExpanded ? "👇" : "👉"}
-          </span>
-        ),
-        Cell: ({ row }) =>
-          row.canExpand ? (
-            <span
-              {...row.getToggleRowExpandedProps({
-                style: {
-                  paddingLeft: `${row.depth * 2}rem`,
-                },
-              })}
-            >
-              {row.isExpanded ? "👇" : "👉"}
-            </span>
-          ) : null,
-      },
-      {
-        Header: "Weekly Player Stats",
-        columns: [
-          {
-            Header: "Player Name",
-            accessor: "playerName",
-          },
-          {
-            Header: "Team Name",
-            accessor: "teamName",
-          },
-          {
-            Header: "Matches",
-            accessor: "match",
-          },
-          {
-            Header: "Points",
-            accessor: "point",
-          },
-        ],
-      },
-    ],
-    []
-  );
-  const columnsTeam = React.useMemo(
-    () => [
-      {
-        Header: "Team Stats",
-        columns: [
-          {
-            Header: "Rank",
-            accessor: "rank",
-          },
-          {
-            Header: "Team Name",
-            accessor: "teamName",
-          },
-          {
-            Header: "Points",
-            accessor: "point",
-          },
-        ],
-      },
-    ],
-    []
-  );
-  const quizTeam = React.useMemo(
-    () => [
-      {
-        Header: "Quiz Stats",
-        columns: [
-          {
-            Header: "Player Name",
-            accessor: "playerName",
-          },
-          {
-            Header: "Team Name",
-            accessor: "teamName",
-          },
-          {
-            Header: "Points",
-            accessor: "point",
-          },
-          {
-            Header: "Challenge",
-            accessor: "challenge",
-          },
-        ],
-      },
-    ],
-    []
-  );
   const makeDataFull = (array) => {
     let makeObject = (array) => {
       const data = {
@@ -251,9 +110,9 @@ const GoogleSheet = () => {
     // teamStats.reverse();
     teamStats.forEach((e, i) => {
       e["rank"] = i + 1;
-      console.log(e);
+      // console.log(e);
     });
-    console.log(teamStats);
+    // console.log(teamStats);
     return teamStats;
   };
   const makeDataQuiz = (array) => {
@@ -282,9 +141,124 @@ const GoogleSheet = () => {
       setquiz(makeDataQuiz(value));
     });
   }, []);
-  const teamDisplay = () => {
+  const [expandedRows, setExpandedRows] = useState([]);
+  const headerTemplate = (data) => {
+    // console.log(data.challenge);
+    return `Challenge - ${data.challenge}`;
+  };
+  const quizDisplay = () => {
     if (quiz.length > 0) {
-      return <Table columns={quizTeam} data={quiz} />;
+      return (
+        <div>
+          <DataTable
+            header="Quiz Challenge Stats"
+            rowGroupFooterTemplate={() => null}
+            value={quiz}
+            rowGroupMode="subheader"
+            sortField="challenge"
+            sortOrder={1}
+            groupField="challenge"
+            rowGroupHeaderTemplate={headerTemplate}
+            expandableRowGroups={true}
+            expandedRows={expandedRows}
+            onRowToggle={(e) => setExpandedRows(e.data)}
+          >
+            <Column
+              field="playerName"
+              header="PLAYER NAME"
+              style={{ textAlign: "center" }}
+            />
+            <Column
+              field="teamName"
+              header="TEAM NAME"
+              style={{ textAlign: "center" }}
+            />
+            <Column
+              field="point"
+              header="POINT"
+              style={{ textAlign: "center" }}
+            />
+          </DataTable>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p>No Data Available For Quiz Challenge</p>
+        </div>
+      );
+    }
+  };
+  const [expandedRowsWeek, setExpandedRowsWeek] = useState([]);
+  const headerTemplateWeek = (data) => {
+    return `${data.teamName}`;
+  };
+  const weekDisplay = () => {
+    if (data.length > 0) {
+      return (
+        <div>
+          <DataTable
+            header="Week Challenge Stats"
+            rowGroupFooterTemplate={() => null}
+            value={data}
+            rowGroupMode="subheader"
+            sortField="teamName"
+            sortOrder={1}
+            groupField="teamName"
+            rowGroupHeaderTemplate={headerTemplateWeek}
+            expandableRowGroups={true}
+            expandedRows={expandedRowsWeek}
+            onRowToggle={(e) => setExpandedRowsWeek(e.data)}
+          >
+            <Column
+              field="playerName"
+              header="PLAYER NAME"
+              style={{ textAlign: "center" }}
+            />
+            <Column
+              field="match"
+              header="MATCH"
+              style={{ textAlign: "center" }}
+            />
+            <Column
+              field="point"
+              header="POINT"
+              style={{ textAlign: "center" }}
+            />
+          </DataTable>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p>No Data Available For Quiz Challenge</p>
+        </div>
+      );
+    }
+  };
+  const teamDisplay = () => {
+    if (team.length > 0) {
+      return (
+        <div>
+          <DataTable value={team} header="Team Rankings">
+            <Column
+              field="rank"
+              header="RANK"
+              style={{ textAlign: "center" }}
+            />
+            <Column
+              field="teamName"
+              header="TEAM NAME"
+              style={{ textAlign: "center" }}
+            />
+            <Column
+              field="point"
+              header="POINTS"
+              style={{ textAlign: "center" }}
+            />
+          </DataTable>
+        </div>
+      );
     } else {
       return (
         <div>
@@ -294,15 +268,15 @@ const GoogleSheet = () => {
     }
   };
   if (data && team && quiz) {
+    // console.log(data);
     return (
-      <div
-        className="
-      auth-card"
-      >
+      <div className="justify-content-center">
         <Styles>
-          <Table columns={columnsTeam} data={team} />
-          <Table columns={columnsPlayer} data={data} />
           {teamDisplay()}
+          <div className="my-3"></div>
+          {quizDisplay()}
+          <div className="my-3"></div>
+          {weekDisplay()}
         </Styles>
       </div>
     );
