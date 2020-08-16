@@ -39,8 +39,8 @@ const QuizCreate = (props) => {
     console.log(userState.state);
     const question = questions[currentQuestion];
     const challengeDisplay = () => {
-      return <div>challenge {questions[0].challenge} </div>
-    }
+      return <div>challenge {questions[0].challenge} </div>;
+    };
     const renderError = () => {
       if (!error) {
         return;
@@ -77,7 +77,7 @@ const QuizCreate = (props) => {
     } else {
       return (
         <div className="container">
-        {challengeDisplay()}
+          {challengeDisplay()}
           <Progress total={questions.length} current={currentQuestion + 1} />
           <Question />
           {renderError()}

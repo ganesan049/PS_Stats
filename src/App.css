@@ -42,7 +42,6 @@ a {
   margin: 26px auto;
 }
 
-.home {}
 
 #toast-container {
   top: 30px !important;
@@ -70,7 +69,7 @@ h2 {
 .answer {
   border: 1px solid #fff;
   padding: 5px 10px 5px 45px;
-  width: 610px;
+  width: 100%;
   text-align: left;
   margin-top: 10px;
   position: relative;
