@@ -1,7 +1,7 @@
 import { appendSpreadsheet } from "./GoogleSheetData";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {Button,Spinner} from 'react-bootstrap'
+import { Button, Spinner } from "react-bootstrap";
 import { useTable, useExpanded } from "react-table";
 
 const GoogleSheet = () => {
@@ -234,28 +234,33 @@ const GoogleSheet = () => {
       });
       teamStats.push({
         teamName: arrayValue[0],
-        rank: index,
+        // rank: index,
         point: arrayValue[1],
       });
     });
     function compare(a, b) {
-      if (Number(a.point) < Number(b.point)) {
+      if (Number(a.point) > Number(b.point)) {
         return -1;
       }
-      if (Number(a.point) > Number(b.point)) {
+      if (Number(a.point) < Number(b.point)) {
         return 1;
       }
       return 0;
     }
-
     teamStats.sort(compare);
-    return teamStats.reverse();
+    // teamStats.reverse();
+    teamStats.forEach((e, i) => {
+      e["rank"] = i + 1;
+      console.log(e);
+    });
+    console.log(teamStats);
+    return teamStats;
   };
   const makeDataQuiz = (array) => {
     let teamStats = [];
     array.forEach((arrayValue) => {
       teamStats.push({
-        playerName:arrayValue[0],
+        playerName: arrayValue[0],
         teamName: arrayValue[1],
         point: arrayValue[2],
         challenge: arrayValue[3],
@@ -278,36 +283,45 @@ const GoogleSheet = () => {
     });
   }, []);
   const teamDisplay = () => {
-    if(quiz.length > 0){
-      return <Table columns={quizTeam} data={quiz} />
-    }else{
-      return <div><p>No Data Available For Quiz Challenge</p></div>
-    } 
-  }
-  if(data && team && quiz){
-    return(
-      <div className="
-      auth-card">
-      <Styles>
-      <Table columns={columnsTeam} data={team} />
-      <Table columns={columnsPlayer} data={data} />
-      {teamDisplay()}
-    </Styles>
-      </div>
-    )
-  }else{
+    if (quiz.length > 0) {
+      return <Table columns={quizTeam} data={quiz} />;
+    } else {
+      return (
+        <div>
+          <p>No Data Available For Quiz Challenge</p>
+        </div>
+      );
+    }
+  };
+  if (data && team && quiz) {
     return (
-      <div> <Button variant="primary" disabled>
-      <Spinner
-        as="span"
-        animation="grow"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-      Loading...
-    </Button></div>
-    )
+      <div
+        className="
+      auth-card"
+      >
+        <Styles>
+          <Table columns={columnsTeam} data={team} />
+          <Table columns={columnsPlayer} data={data} />
+          {teamDisplay()}
+        </Styles>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        {" "}
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="grow"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          Loading...
+        </Button>
+      </div>
+    );
   }
-  }
+};
 export default GoogleSheet;
